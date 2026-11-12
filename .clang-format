@@ -1,0 +1,31 @@
+# Project C++ style — see ~/.claude/CLAUDE.md "C++ Code Style".
+# Requires clang-format 14+ (QualifierAlignment).
+BasedOnStyle: LLVM
+Language: Cpp
+Standard: c++20
+
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+ColumnLimit: 120
+
+# Allman braces
+BreakBeforeBraces: Allman
+
+# West const: const int x, not int const x
+QualifierAlignment: Left
+
+# Framebuffer& frame_buffer
+PointerAlignment: Left
+ReferenceAlignment: Left
+
+AccessModifierOffset: -4
+NamespaceIndentation: All
+AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+AllowShortBlocksOnASingleLine: Never
+
+# Keep include groups as written (std / third-party / project)
+IncludeBlocks: Preserve
+SortIncludes: CaseSensitive
