@@ -19,14 +19,16 @@ the reference it will be validated against. *The Next Week* and *The Rest of You
 
 ## Current status
 
-**As of 2026-11-12 — Phase 0 in progress: Dear ImGui (docking) builds and links; render-view integration next.**
+**As of 2026-11-15 — Phase 0 in progress: ImGui demo window drawn over the framebuffer; docking next.**
 
 - **Setup: complete.** Template applied; Snake Engine added as a submodule; display seed (Vulkan
   framebuffer upload + fullscreen quad, gradient test pattern) copied from
   [tiny_render_se](https://github.com/vfxsnake/tiny_render_se) at its Phase 0.4 commit. Builds and shows the gradient on WSL and Windows.
 - **Phase 0 — Progressive display: in progress.** Milestone 0.1 (the framebuffer shown in a docked
   Dear ImGui render-view window with dockable control panels) started: ImGui `v1.93.0-docking` fetched and
-  built as a library on WSL and Windows; not yet wired into the frame loop.
+  built as a library on WSL and Windows; an `ImGuiLayer` class (context + GLFW/Vulkan backend lifetime,
+  per-frame begin / record hooks) is wired into the frame loop — the ImGui demo window draws over the
+  gradient, clean start and exit on WSL. Next: dockspace, then the framebuffer as a texture in a panel.
 - **Chapters 2–13: not started.**
 
 Known gaps: none yet.
@@ -42,6 +44,7 @@ raytracing_in_one_weekend_se/
 │   ├── Application.h/.cpp     window lifecycle, owns display + tracer
 │   ├── framebuffer/           Framebuffer + Color: the tracer/display boundary
 │   ├── display/               Vulkan pipeline: uploads the framebuffer to a texture each frame
+│   ├── ui/                    ImGuiLayer: Dear ImGui context + GLFW/Vulkan backends
 │   └── utils/Timer.h
 ├── shaders/display.slang
 ├── tests/                     Catch2 unit tests

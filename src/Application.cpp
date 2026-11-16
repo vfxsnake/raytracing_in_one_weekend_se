@@ -5,6 +5,9 @@
 #include <core/VulkanContext.h>
 #include <core/SwapChain.h>
 
+#include <imgui.h>
+
+#include "ui/ImGuiLayer.h"
 #include "display/DisplayPipeline.h"
 #include "framebuffer/Color.h"
 
@@ -19,6 +22,10 @@ Application::Application() :
 Application::~Application()
 {
     context_->getLogicalDevice().waitIdle();
+    displayPipeline_.reset();
+    imguiLayer_.reset();
+    swapChain_.reset();
+    context_.reset();
     glfwDestroyWindow(window_);
     glfwTerminate();
 }
@@ -52,9 +59,11 @@ void Application::initVulkan()
 {
     context_ = std::make_unique<VulkanContext>(window_);
     swapChain_ = std::make_unique<SwapChain>(*context_, window_);
+    imguiLayer_ = std::make_unique<ImGuiLayer>(window_, *context_, *swapChain_);
     displayPipeline_ = std::make_unique<DisplayPipeline>(
         *context_, 
         *swapChain_,
+        *imguiLayer_,
         WIDTH,
         HEIGHT
     );
@@ -66,6 +75,8 @@ void Application::mainLoop()
     while (!glfwWindowShouldClose(window_))
     {
         glfwPollEvents();
+        imguiLayer_->beginFrame();
+        ImGui::ShowDemoWindow();
         displayPipeline_->drawFrame(framebuffer_);
     }
 }

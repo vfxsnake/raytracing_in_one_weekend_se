@@ -12,6 +12,7 @@
 class VulkanContext;
 class SwapChain;
 class DisplayPipeline;
+class ImGuiLayer;
 
 class Application
 {
@@ -38,5 +39,6 @@ private:
     // vulkan unique pointer objects
     std::unique_ptr<VulkanContext> context_;
     std::unique_ptr<SwapChain> swapChain_;
+    std::unique_ptr<ImGuiLayer> imguiLayer_;
     std::unique_ptr<DisplayPipeline> displayPipeline_;
 };

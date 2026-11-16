@@ -10,6 +10,7 @@ class VulkanContext;
 class SwapChain;
 class GraphicsPipeline;
 class Framebuffer;
+class ImGuiLayer;
 
 class DisplayPipeline
 {
@@ -17,6 +18,7 @@ public:
     DisplayPipeline(
         VulkanContext& context, 
         SwapChain& swap_chain,
+        ImGuiLayer& imgui_layer,
         uint32_t frame_buffer_width,
         uint32_t frame_buffer_height
     );
@@ -51,6 +53,7 @@ private:
 
     VulkanContext& context_;
     SwapChain& swapChain_;
+    ImGuiLayer& imguiLayer_;
 
     uint32_t textureWidth_ = 0;
     uint32_t textureHeight_ = 0;

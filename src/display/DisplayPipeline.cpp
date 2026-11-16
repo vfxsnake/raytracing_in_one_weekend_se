@@ -8,15 +8,18 @@
 #include "core/SwapChain.h"
 #include "GraphicsPipeline.h"
 #include "framebuffer/Framebuffer.h"
+#include "ui/ImGuiLayer.h"
 
 DisplayPipeline::DisplayPipeline(
     VulkanContext& context, 
     SwapChain& swap_chain,
+    ImGuiLayer& imgui_layer,
     uint32_t frame_buffer_width,
     uint32_t frame_buffer_height
 ):
     context_(context),
     swapChain_(swap_chain),
+    imguiLayer_(imgui_layer),
     textureWidth_(frame_buffer_width),
     textureHeight_(frame_buffer_height)
 {
@@ -234,6 +237,7 @@ void DisplayPipeline::drawFrame(const Framebuffer& framebuffer)
 
     commandBuffer_.draw(3, 1, 0, 0);
 
+    imguiLayer_.recordDrawData(commandBuffer_);
     commandBuffer_.endRendering();
 
     transitionImageLayout(
