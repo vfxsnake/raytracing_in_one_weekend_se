@@ -9,6 +9,7 @@
 #include "GraphicsPipeline.h"
 #include "framebuffer/Framebuffer.h"
 #include "ui/ImGuiLayer.h"
+#include "imgui_impl_vulkan.h"
 
 DisplayPipeline::DisplayPipeline(
     VulkanContext& context, 
@@ -279,6 +280,12 @@ void DisplayPipeline::drawFrame(const Framebuffer& framebuffer)
 }
 
 
+vk::DescriptorSet DisplayPipeline::getImGuiDescriptorSet() const
+{
+    return imguiDescriptorSet_;
+}
+
+
 void DisplayPipeline::transitionImageLayout(
     vk::Image image,
     vk::ImageLayout old_layout,
@@ -504,4 +511,8 @@ void DisplayPipeline::createDescriptors()
     };
 
     context_.getLogicalDevice().updateDescriptorSets({write_descriptor_set}, {});
+
+    imguiDescriptorSet_ = vk::DescriptorSet{
+        ImGui_ImplVulkan_AddTexture(*textureImageView_, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
+    };
 }

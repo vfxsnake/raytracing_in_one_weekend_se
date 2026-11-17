@@ -76,6 +76,20 @@ void Application::mainLoop()
     {
         glfwPollEvents();
         imguiLayer_->beginFrame();
+        
+        // ImGui panel begin (render texture window) 
+        ImGui::Begin("Render Viewport", nullptr, 0);
+        
+        // converting the display pipeline texture into imTextureID for ImGui
+        // the static cast unwraps the vk::DescriptorSet into VkDescriptorSet (raw c handle)
+        VkDescriptorSet descriptor_set = static_cast<VkDescriptorSet>(displayPipeline_->getImGuiDescriptorSet());
+        ImTextureID texture_id = reinterpret_cast<ImTextureID>(descriptor_set);
+
+        ImVec2 buffer_size = ImVec2(framebuffer_.getWidth(), framebuffer_.getHeight());
+        ImGui::Image(texture_id, buffer_size);
+        
+
+        ImGui::End();
         ImGui::ShowDemoWindow();
         displayPipeline_->drawFrame(framebuffer_);
     }

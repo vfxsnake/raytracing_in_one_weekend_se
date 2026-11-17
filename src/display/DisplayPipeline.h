@@ -27,6 +27,8 @@ public:
 
     void drawFrame(const Framebuffer& framebuffer);
 
+    vk::DescriptorSet getImGuiDescriptorSet() const;
+
 private:
 
     void createCommandPool();
@@ -70,6 +72,7 @@ private:
     vk::raii::DescriptorSetLayout descriptorSetLayout_ = nullptr;
     vk::raii::DescriptorPool descriptorPool_ = nullptr;
     vk::raii::DescriptorSet descriptorSet_ = nullptr;
+    vk::DescriptorSet imguiDescriptorSet_; 
 
     std::unique_ptr<GraphicsPipeline> graphicsPipeline_;
 

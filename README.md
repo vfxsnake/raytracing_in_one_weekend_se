@@ -19,7 +19,7 @@ the reference it will be validated against. *The Next Week* and *The Rest of You
 
 ## Current status
 
-**As of 2026-11-15 — Phase 0 in progress: ImGui demo window drawn over the framebuffer; docking next.**
+**As of 2026-11-17 — Phase 0 in progress: framebuffer texture shown in a dockable ImGui render-view panel.**
 
 - **Setup: complete.** Template applied; Snake Engine added as a submodule; display seed (Vulkan
   framebuffer upload + fullscreen quad, gradient test pattern) copied from
@@ -27,8 +27,9 @@ the reference it will be validated against. *The Next Week* and *The Rest of You
 - **Phase 0 — Progressive display: in progress.** Milestone 0.1 (the framebuffer shown in a docked
   Dear ImGui render-view window with dockable control panels) started: ImGui `v1.93.0-docking` fetched and
   built as a library on WSL and Windows; an `ImGuiLayer` class (context + GLFW/Vulkan backend lifetime,
-  per-frame begin / record hooks) is wired into the frame loop — the ImGui demo window draws over the
-  gradient, clean start and exit on WSL. Next: dockspace, then the framebuffer as a texture in a panel.
+  per-frame begin / record hooks) is wired into the frame loop; a pass-through dockspace covers the window
+  and the layout persists in `imgui.ini` — clean start and exit on WSL and Windows. The framebuffer texture is
+  shown in a dockable render-view panel via `ImGui::Image`; next: a larger window and aspect-fit, then remove the quad.
 - **Chapters 2–13: not started.**
 
 Known gaps: none yet.

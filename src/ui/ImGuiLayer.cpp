@@ -12,6 +12,9 @@ ImGuiLayer::ImGuiLayer(GLFWwindow* window, VulkanContext& context, const SwapCha
 {
     ImGui::CreateContext();
     
+    ImGuiIO& io = ImGui::GetIO();
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+
     // Setup Dear ImGui style
     ImGuiStyle& style = ImGui::GetStyle();
     ImGui::StyleColorsDark();
@@ -60,6 +63,7 @@ void ImGuiLayer::beginFrame()
     ImGui_ImplVulkan_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();   
+    ImGui::DockSpaceOverViewport(0, nullptr, ImGuiDockNodeFlags_PassthruCentralNode);
 }
 
 
