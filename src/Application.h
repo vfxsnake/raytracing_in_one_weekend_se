@@ -30,8 +30,12 @@ private:
 
     void drawTextPattern();
 
-    static constexpr uint32_t WIDTH = 800;
-    static constexpr uint32_t HEIGHT = 600;
+    static constexpr uint32_t WINDOW_WIDTH = 1600;
+    static constexpr uint32_t WINDOW_HEIGHT = 900;
+
+    uint32_t frameBufferWidth_ = 800;
+    uint32_t frameBufferHeight_ = 600;
+
     GLFWwindow* window_ = nullptr;
 
     Framebuffer framebuffer_;
