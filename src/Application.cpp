@@ -125,7 +125,6 @@ void Application::mainLoop()
             _render_view_zoom = std::max(0.05f, zoom);
         }
 
-
         ImGui::End();
         ImGui::ShowDemoWindow();
         displayPipeline_->drawFrame(framebuffer_);
