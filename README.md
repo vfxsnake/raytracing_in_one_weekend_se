@@ -19,7 +19,7 @@ the reference it will be validated against. *The Next Week* and *The Rest of You
 
 ## Current status
 
-**As of 2026-11-19 — Phase 0 in progress: framebuffer texture shown 1:1, centered, with mouse-wheel zoom, in a dockable ImGui render-view panel.**
+**As of 2026-11-20 — Phase 0 in progress: the framebuffer is displayed only through a dockable ImGui render-view panel (1:1, centered, wheel zoom); the fullscreen-quad path is removed.**
 
 - **Setup: complete.** Template applied; Snake Engine added as a submodule; display seed (Vulkan
   framebuffer upload + fullscreen quad, gradient test pattern) copied from
@@ -30,7 +30,10 @@ the reference it will be validated against. *The Next Week* and *The Rest of You
   per-frame begin / record hooks) is wired into the frame loop; a pass-through dockspace covers the window
   and the layout persists in `imgui.ini` — clean start and exit on WSL and Windows. The framebuffer texture is
   shown 1:1 in a dockable render-view panel via `ImGui::Image` (1600×900 window, 800×600 framebuffer), centered,
-  scrollbars when larger than the panel, mouse-wheel zoom while hovering the image; next: remove the quad.
+  scrollbars when larger than the panel, mouse-wheel zoom while hovering the image. The fullscreen-quad path
+  (graphics pipeline, Slang shader, shader build step) is removed — ImGui is the only display path; clean on WSL
+  and Windows. Tagged `imgui-render-view-starter` as a reusable starting point. Next: a Controls panel and a View
+  menu to show / hide panels.
 - **Chapters 2–13: not started.**
 
 Known gaps: none yet.
