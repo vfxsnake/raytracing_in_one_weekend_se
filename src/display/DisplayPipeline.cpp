@@ -6,7 +6,6 @@
 
 #include "core/VulkanContext.h"
 #include "core/SwapChain.h"
-#include "GraphicsPipeline.h"
 #include "framebuffer/Framebuffer.h"
 #include "ui/ImGuiLayer.h"
 #include "imgui_impl_vulkan.h"
@@ -28,17 +27,10 @@ DisplayPipeline::DisplayPipeline(
     createCommandBuffer();
     createSyncObjects();
     createTexture();
-    createSampler();
     createStagingBuffer();
-    createDescriptors();
-    graphicsPipeline_ = std::make_unique<GraphicsPipeline>(
-        context_, 
-        swapChain_.getFormat(),
-        *descriptorSetLayout_
-    );
+    createImGuiDescriptorSet();
 }
 
-DisplayPipeline::~DisplayPipeline() = default;
 
 void DisplayPipeline::createCommandPool()
 {
@@ -185,7 +177,7 @@ void DisplayPipeline::drawFrame(const Framebuffer& framebuffer)
     // preparing rendering attachment info
     vk::ClearValue clear_value{
         .color = { // vk::CleanColorValue struct. using the float initializer
-            .float32 = std::array<float,4>{1.0f, 0.0f, 0.0f, 1.0f}
+            .float32 = std::array<float,4>{0.1f, 0.1f, 0.1f, 1.0f}
         }
     };
 
@@ -208,36 +200,6 @@ void DisplayPipeline::drawFrame(const Framebuffer& framebuffer)
     };
 
     commandBuffer_.beginRendering(rendering_info);
-    vk::Extent2D extent = swapChain_.getExtent();
-    vk::Viewport view_port{
-        .width = static_cast<float>(extent.width),
-        .height = static_cast<float>(extent.height),
-        .minDepth = 0.0f,
-        .maxDepth = 1.0f
-    };
-
-    vk::Rect2D scissors {
-        .offset = {0, 0},
-        .extent = extent
-    };
-    commandBuffer_.bindPipeline(
-        vk::PipelineBindPoint::eGraphics,
-        *(graphicsPipeline_->getPipeline())
-    );
-
-    commandBuffer_.bindDescriptorSets(
-        vk::PipelineBindPoint::eGraphics,
-        *graphicsPipeline_->getPipelineLayout(),
-        0,
-        *descriptorSet_,
-        nullptr
-    );
-
-    commandBuffer_.setViewport(0, view_port);
-    commandBuffer_.setScissor(0, scissors);
-
-    commandBuffer_.draw(3, 1, 0, 0);
-
     imguiLayer_.recordDrawData(commandBuffer_);
     commandBuffer_.endRendering();
 
@@ -396,21 +358,6 @@ void DisplayPipeline::createTexture()
 }
 
 
-void DisplayPipeline::createSampler()
-{
-    vk::SamplerCreateInfo sampler_create_info{
-        .magFilter = vk::Filter::eNearest,
-        .minFilter = vk::Filter::eNearest,
-        .addressModeU = vk::SamplerAddressMode::eClampToEdge,
-        .addressModeV = vk::SamplerAddressMode::eClampToEdge,
-        .addressModeW = vk::SamplerAddressMode::eClampToEdge,
-        .maxLod = 0.0f
-    };
-
-    sampler_ = vk::raii::Sampler(context_.getLogicalDevice(), sampler_create_info);
-}
-
-
 void DisplayPipeline::createStagingBuffer()
 {
     // vk::DeviceSize(textureWidth_) build up the arithmetic to 64bits; 4 is for RGBA values
@@ -446,71 +393,8 @@ void DisplayPipeline::createStagingBuffer()
 }
 
 
-void DisplayPipeline::createDescriptors()
+void DisplayPipeline::createImGuiDescriptorSet()
 {
-    // creating DescriptorSetLayout
-    vk::DescriptorSetLayoutBinding descriptor_set_layout_binding{
-        .binding = 0,
-        .descriptorType = vk::DescriptorType::eCombinedImageSampler,
-        .descriptorCount = 1,
-        .stageFlags = vk::ShaderStageFlagBits::eFragment,
-        .pImmutableSamplers = nullptr
-    };
-
-    vk::DescriptorSetLayoutCreateInfo descriptor_set_layout_create_info{
-        .bindingCount = 1,
-        .pBindings = &descriptor_set_layout_binding
-    };
-
-    descriptorSetLayout_ = vk::raii::DescriptorSetLayout(
-        context_.getLogicalDevice(),
-        descriptor_set_layout_create_info
-    );
-
-    // creating DescriptorSetPool
-    vk::DescriptorPoolSize descriptor_pool_size{
-        .type = vk::DescriptorType::eCombinedImageSampler,
-        .descriptorCount = 1
-    };
-    vk::DescriptorPoolCreateInfo descriptor_pool_create_info{
-        .flags = vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet,
-        .maxSets = 1,
-        .poolSizeCount = 1,
-        .pPoolSizes = &descriptor_pool_size,
-    };
-
-    descriptorPool_ = vk::raii::DescriptorPool(
-        context_.getLogicalDevice(),
-        descriptor_pool_create_info
-    );
-
-    // allocate set
-    vk::DescriptorSetAllocateInfo descriptor_set_allocate_info{
-        .descriptorPool = *descriptorPool_,
-        .descriptorSetCount = 1,
-        .pSetLayouts = &*descriptorSetLayout_
-    };
-
-    std::vector<vk::raii::DescriptorSet> descriptor_sets = context_.getLogicalDevice().allocateDescriptorSets(descriptor_set_allocate_info);
-    descriptorSet_ = std::move(descriptor_sets.front());
-
-    // writing the descriptor
-    vk::DescriptorImageInfo descriptor_image_info{
-        .sampler = *sampler_,
-        .imageView = *textureImageView_,
-        .imageLayout = vk::ImageLayout::eShaderReadOnlyOptimal
-    };
-
-    vk::WriteDescriptorSet write_descriptor_set{
-        .dstSet = *descriptorSet_,
-        .dstBinding = 0,
-        .dstArrayElement = 0,
-        .descriptorCount = 1,
-        .descriptorType = vk::DescriptorType::eCombinedImageSampler,
-        .pImageInfo = &descriptor_image_info
-    };
-
-    context_.getLogicalDevice().updateDescriptorSets({write_descriptor_set}, {});
 
     imguiDescriptorSet_ = vk::DescriptorSet{
         ImGui_ImplVulkan_AddTexture(*textureImageView_, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)

@@ -140,7 +140,7 @@ void Application::drawTextPattern()
         {
             Color color{
                 .r = static_cast<uint8_t>(255* x/ (framebuffer_.getWidth() -1)),
-                .g = static_cast<uint8_t>(255* x/ (framebuffer_.getWidth() -1)),
+                .g = static_cast<uint8_t>(255* y/ (framebuffer_.getHeight() -1)),
                 .b = 0,
                 .a = 255
             };

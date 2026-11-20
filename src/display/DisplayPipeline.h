@@ -2,13 +2,11 @@
 
 #include <vulkan/vulkan_raii.hpp>
 #include <vector>
-#include <memory>
 #include <cstdint>
 
 // forward declaration
 class VulkanContext;
 class SwapChain;
-class GraphicsPipeline;
 class Framebuffer;
 class ImGuiLayer;
 
@@ -23,8 +21,6 @@ public:
         uint32_t frame_buffer_height
     );
     
-    ~DisplayPipeline();
-
     void drawFrame(const Framebuffer& framebuffer);
 
     vk::DescriptorSet getImGuiDescriptorSet() const;
@@ -48,9 +44,8 @@ private:
     uint32_t findMemoryType(uint32_t type_filter, vk::MemoryPropertyFlags properties) const;
     void createTexture();
 
-    void createSampler();
     void createStagingBuffer();
-    void createDescriptors();
+    void createImGuiDescriptorSet();
 
 
     VulkanContext& context_;
@@ -63,18 +58,12 @@ private:
     vk::raii::DeviceMemory textureMemory_ = nullptr;
     vk::raii::Image textureImage_ = nullptr;
     vk::raii::ImageView textureImageView_ = nullptr;
-    vk::raii::Sampler sampler_ = nullptr;
 
     vk::raii::DeviceMemory stagingMemory_ = nullptr;
     vk::raii::Buffer stagingBuffer_ = nullptr;
     void* stagingBufferMemoryMapped_ = nullptr;
 
-    vk::raii::DescriptorSetLayout descriptorSetLayout_ = nullptr;
-    vk::raii::DescriptorPool descriptorPool_ = nullptr;
-    vk::raii::DescriptorSet descriptorSet_ = nullptr;
     vk::DescriptorSet imguiDescriptorSet_; 
-
-    std::unique_ptr<GraphicsPipeline> graphicsPipeline_;
 
     // Command pool and buffers most be created in this order
     vk::raii::CommandPool commandPool_ = nullptr;

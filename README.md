@@ -45,10 +45,9 @@ raytracing_in_one_weekend_se/
 │   ├── main.cpp
 │   ├── Application.h/.cpp     window lifecycle, owns display + tracer
 │   ├── framebuffer/           Framebuffer + Color: the tracer/display boundary
-│   ├── display/               Vulkan pipeline: uploads the framebuffer to a texture each frame
+│   ├── display/               uploads the framebuffer to a texture each frame; ImGui draws it in the render view
 │   ├── ui/                    ImGuiLayer: Dear ImGui context + GLFW/Vulkan backends
 │   └── utils/Timer.h
-├── shaders/display.slang
 ├── tests/                     Catch2 unit tests
 ├── assets/
 ├── docs/lessons/
@@ -61,7 +60,7 @@ raytracing_in_one_weekend_se/
 
 | Dependency | How acquired |
 |------------|-------------|
-| Vulkan SDK (incl. `slangc`) | System install (LunarG) |
+| Vulkan SDK | System install (LunarG) |
 | GLFW 3.4 | CMake FetchContent |
 | Vulkan-Hpp | CMake FetchContent |
 | Catch2 | CMake FetchContent |
@@ -94,7 +93,7 @@ git clone --recurse-submodules https://github.com/vfxsnake/raytracing_in_one_wee
   cd build && Release\RayTracingInOneWeekendSE.exe
   ```
 
-Run the executable from the build directory — `shaders/` and `assets/` are resolved against the working
+Run the executable from the build directory — `assets/` and `imgui.ini` are resolved against the working
 directory.
 
 ---
