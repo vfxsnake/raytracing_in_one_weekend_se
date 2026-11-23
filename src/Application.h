@@ -7,6 +7,7 @@
 #include <memory>
 
 #include "framebuffer/Framebuffer.h"
+#include "ui/RenderView.h"
 
 // forward declarations
 class VulkanContext;
@@ -39,6 +40,7 @@ private:
     GLFWwindow* window_ = nullptr;
 
     Framebuffer framebuffer_;
+    RenderView renderView_;
 
     // vulkan unique pointer objects
     std::unique_ptr<VulkanContext> context_;

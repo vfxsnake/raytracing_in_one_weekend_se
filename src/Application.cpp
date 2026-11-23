@@ -1,8 +1,6 @@
 #include "Application.h"
 
 #include <stdexcept>
-#include <algorithm>
-#include <cmath>
 
 #include <core/VulkanContext.h>
 #include <core/SwapChain.h>
@@ -10,6 +8,7 @@
 #include <imgui.h>
 
 #include "ui/ImGuiLayer.h"
+#include "ui/RenderView.h"
 #include "display/DisplayPipeline.h"
 #include "framebuffer/Color.h"
 
@@ -74,59 +73,26 @@ void Application::initVulkan()
 
 void Application::mainLoop()
 {
-    // persistent variable for this loop, used for tracking the render view zoom, only used by ImGui.
-    float _render_view_zoom = 1.0f;
-    
     while (!glfwWindowShouldClose(window_))
     {   
         glfwPollEvents();
         imguiLayer_->beginFrame();
         
-        // ImGui panel begin (render texture window) 
-        ImGui::Begin(
-            "Render Viewport", // window name
-            nullptr, // bool pointer if not null the closing button will appear and the state will be stored in the pointer.
-            ImGuiWindowFlags_HorizontalScrollbar
-        );
-        
-        // get current window rendering available surface
-        ImVec2 region_available = ImGui::GetContentRegionAvail();
-        // getting the offset to center the image if the frame buffer is smaller than the available space
-        
-        ImVec2 image_size = ImVec2(
-            framebuffer_.getWidth() * _render_view_zoom, 
-            framebuffer_.getHeight() * _render_view_zoom
-        );
-
-        ImVec2 offset  = ImVec2(
-            std::max(0.0f, (region_available.x - image_size.x) * 0.5f ),
-            std::max(0.0f, (region_available.y - image_size.y) * 0.5f )
-        );
-
-        ImVec2 cursor_position = ImGui::GetCursorScreenPos();
-        offset.x += cursor_position.x;
-        offset.y += cursor_position.y;
-        ImGui::SetCursorScreenPos(offset);
-
-        // converting the display pipeline texture into imTextureID for ImGui
+         // converting the display pipeline texture into imTextureID for ImGui
         // the static cast unwraps the vk::DescriptorSet into VkDescriptorSet (raw c handle)
         VkDescriptorSet descriptor_set = static_cast<VkDescriptorSet>(displayPipeline_->getImGuiDescriptorSet());
         ImTextureID texture_id = reinterpret_cast<ImTextureID>(descriptor_set);
-
-
-        ImGui::Image(texture_id, image_size);
+        ImVec2 image_size = ImVec2(
+            static_cast<float>(framebuffer_.getWidth()), 
+            static_cast<float>(framebuffer_.getHeight())
+        );
         
-        // zoom action
-        bool is_image_hovered = ImGui::IsItemHovered(0);
-        if (is_image_hovered)
-        {
-            float wheel_delta = ImGui::GetIO().MouseWheel;
-            float zoom = _render_view_zoom * std::pow(1.25f, wheel_delta);
-            _render_view_zoom = std::max(0.05f, zoom);
-        }
-
-        ImGui::End();
+        // Render view class calls goes here
+        renderView_.draw(image_size, texture_id);
+        
+        // temporary call for demo window, this will be discared later
         ImGui::ShowDemoWindow();
+
         displayPipeline_->drawFrame(framebuffer_);
     }
 }

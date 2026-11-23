@@ -116,6 +116,7 @@ add_executable(${PROJECT_NAME}
     src/framebuffer/Framebuffer.cpp
     src/display/DisplayPipeline.cpp
     src/ui/ImGuiLayer.cpp
+    src/ui/RenderView.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE

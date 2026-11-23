@@ -32,8 +32,8 @@ the reference it will be validated against. *The Next Week* and *The Rest of You
   shown 1:1 in a dockable render-view panel via `ImGui::Image` (1600×900 window, 800×600 framebuffer), centered,
   scrollbars when larger than the panel, mouse-wheel zoom while hovering the image. The fullscreen-quad path
   (graphics pipeline, Slang shader, shader build step) is removed — ImGui is the only display path; clean on WSL
-  and Windows. Tagged `imgui-render-view-starter` as a reusable starting point. Next: a Controls panel and a View
-  menu to show / hide panels.
+  and Windows. Tagged `imgui-render-view-starter` as a reusable starting point. Next: a Controls panel (zoom reset,
+  zoom ratio), then the progressive display.
 - **Chapters 2–13: not started.**
 
 Known gaps: none yet.
