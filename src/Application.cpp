@@ -8,12 +8,13 @@
 #include <imgui.h>
 
 #include "ui/ImGuiLayer.h"
-#include "ui/RenderView.h"
 #include "display/DisplayPipeline.h"
 #include "framebuffer/Color.h"
 
 Application::Application() :
-    framebuffer_(frameBufferWidth_, frameBufferHeight_)
+    framebuffer_(renderSettings_.width, renderSettings_.height),
+    renderView_(viewSettings_),
+    controlPanel_(renderSettings_, viewSettings_)
 {
     initWindow();
     initVulkan();
@@ -65,8 +66,8 @@ void Application::initVulkan()
         *context_, 
         *swapChain_,
         *imguiLayer_,
-        frameBufferWidth_,
-        frameBufferHeight_
+        renderSettings_.width,
+        renderSettings_.height
     );
 }
 
@@ -89,7 +90,7 @@ void Application::mainLoop()
         
         // Render view class calls goes here
         renderView_.draw(image_size, texture_id);
-        
+        controlPanel_.draw();
         // temporary call for demo window, this will be discared later
         ImGui::ShowDemoWindow();
 

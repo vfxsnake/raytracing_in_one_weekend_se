@@ -3,6 +3,14 @@
 #include <algorithm>
 #include <cmath>
 
+#include "settings/Settings.h"
+
+RenderView::RenderView(ViewSettings& view_settings):
+    viewSettings_(view_settings)
+{
+
+}
+
 void RenderView::draw(ImVec2 image_size, ImTextureID texture_id)
 {
     // ImGui panel begin (render texture window) 
@@ -16,8 +24,8 @@ void RenderView::draw(ImVec2 image_size, ImTextureID texture_id)
     ImVec2 region_available = ImGui::GetContentRegionAvail();
     // getting the offset to center the image if the frame buffer is smaller than the available space
     
-    image_size.x *= zoom_;
-    image_size.y *= zoom_;
+    image_size.x *= viewSettings_.zoom;
+    image_size.y *= viewSettings_.zoom;
 
 
     ImVec2 offset  = ImVec2(
@@ -44,47 +52,11 @@ void RenderView::draw(ImVec2 image_size, ImTextureID texture_id)
 }
 
 
-float RenderView::getZoom() const
-{
-    return zoom_;
-}
-
-
-float RenderView::getZoomRatio() const
-{
-    return zoomRatio_;
-}
-
-
-float RenderView::getZoomMinValue() const
-{
-    return zoomMinValue_;
-}
-
-
-void RenderView::setZoom(float zoom_value)
-{
-    zoom_ = std::max(zoomMinValue_, zoom_value);
-}
-
-
-void RenderView::setZoomRatio(float zoom_ratio)
-{
-    zoomRatio_ = zoom_ratio;
-}
-
-
-void RenderView::setZoomMinValue(float zoom_min_value)
-{
-    zoomMinValue_ = zoom_min_value;
-}
-
-
 void RenderView::doZoom()
 {
     float wheel_delta = ImGui::GetIO().MouseWheel;
-    float view_zoom = zoom_ * std::pow(zoomRatio_, wheel_delta);
-    setZoom(view_zoom);
+    float view_zoom = viewSettings_.zoom * std::pow(viewSettings_.zoomRatio, wheel_delta);
+    viewSettings_.zoom = std::max(viewSettings_.zoomMinValue, view_zoom);
 }
 
 

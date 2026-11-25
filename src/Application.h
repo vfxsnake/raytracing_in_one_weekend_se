@@ -8,6 +8,8 @@
 
 #include "framebuffer/Framebuffer.h"
 #include "ui/RenderView.h"
+#include "ui/ControlPanel.h"
+#include "settings/Settings.h"
 
 // forward declarations
 class VulkanContext;
@@ -34,13 +36,14 @@ private:
     static constexpr uint32_t WINDOW_WIDTH = 1600;
     static constexpr uint32_t WINDOW_HEIGHT = 900;
 
-    uint32_t frameBufferWidth_ = 800;
-    uint32_t frameBufferHeight_ = 600;
+    ViewSettings viewSettings_;
+    RenderSettings renderSettings_;
 
     GLFWwindow* window_ = nullptr;
 
     Framebuffer framebuffer_;
     RenderView renderView_;
+    ControlPanel controlPanel_;
 
     // vulkan unique pointer objects
     std::unique_ptr<VulkanContext> context_;

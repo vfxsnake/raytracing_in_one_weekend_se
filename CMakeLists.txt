@@ -117,6 +117,7 @@ add_executable(${PROJECT_NAME}
     src/display/DisplayPipeline.cpp
     src/ui/ImGuiLayer.cpp
     src/ui/RenderView.cpp
+    src/ui/ControlPanel.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE
