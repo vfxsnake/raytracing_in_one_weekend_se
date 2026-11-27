@@ -19,7 +19,7 @@ the reference it will be validated against. *The Next Week* and *The Rest of You
 
 ## Current status
 
-**As of 2026-11-25 — Phase 0 in progress: the framebuffer is displayed only through a dockable ImGui render-view panel (1:1, centered, wheel zoom); view and render parameters live in settings structs owned by `Application`; the Controls panel (zoom reset) is wired, the zoom-ratio widget is next.**
+**As of 2026-11-26 — Phase 0 in progress: the framebuffer is displayed only through a dockable ImGui render-view panel (1:1, centered, wheel zoom); view and render parameters live in settings structs owned by `Application`; the Controls panel is complete (resolution fields, zoom %, zoom ratio, zoom reset); live render-resolution changes are next.**
 
 - **Setup: complete.** Template applied; Snake Engine added as a submodule; display seed (Vulkan
   framebuffer upload + fullscreen quad, gradient test pattern) copied from
@@ -34,9 +34,10 @@ the reference it will be validated against. *The Next Week* and *The Rest of You
   (graphics pipeline, Slang shader, shader build step) is removed — ImGui is the only display path; clean on WSL
   and Windows. Tagged `imgui-render-view-starter` as a reusable starting point. The render-view panel moved out of the
   frame loop into a `RenderView` class that owns its zoom state; clean on WSL and Windows. A `ControlPanel` class
-  (zoom reset) is wired; parameters live in settings structs (`ViewSettings`, `RenderSettings`,
-  `src/settings/Settings.h`) owned by `Application` and edited by `RenderView` / `ControlPanel` by reference. Next: finish the Controls panel, then live render-resolution
-  changes (recreate the framebuffer and its texture), then the progressive display.
+  (collapsing "Render Settings" / "Render View Settings" sections: resolution input, zoom in percent, zoom ratio,
+  zoom reset) is complete; parameters live in settings structs (`ViewSettings`, `RenderSettings`,
+  `src/settings/Settings.h`) owned by `Application` and edited by `RenderView` / `ControlPanel` by reference. Next: live
+  render-resolution changes (recreate the framebuffer and its texture), then the progressive display.
 - **Chapters 2–13: not started.**
 
 Known gaps: none yet.
